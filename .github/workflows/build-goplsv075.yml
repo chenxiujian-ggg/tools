@@ -7,7 +7,7 @@ on:
 
 jobs:
   bundle:
-    runs-on: ubuntu-20.04  # 使用 Ubuntu 20.04，它默认使用 glibc 2.31 [^26^]
+    runs-on: ubuntu-latest
 
     steps:
       # 1. 拉取代码
