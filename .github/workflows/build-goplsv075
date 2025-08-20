@@ -1,0 +1,44 @@
+name: Bundle gopls offline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉代码
+      - uses: actions/checkout@v4
+
+      # 2. 装 Go
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      # 3. 下载全部依赖到 vendor（离线可用）
+      - name: Vendor dependencies
+        run: |
+          cd gopls  # 如果 gopls 代码在仓库子目录就 cd 进去
+          go mod vendor
+          go mod tidy
+
+      # 4. 编译出二进制
+      - name: Build gopls
+        run: |
+          cd gopls
+          go build -mod=vendor -o ../gopls_bin ./
+
+      # 5. 把源码、vendor、二进制一起打包
+      - name: Create offline bundle
+        run: |
+          tar -czvf gopls-offline.tar.gz \
+              gopls/  \
+              gopls_bin
+
+      # 6. 上传
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gopls-offline
+          path: gopls-offline.tar.gz
