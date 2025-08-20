@@ -7,6 +7,8 @@ on:
 
 jobs:
   bundle:
+    runs-on: ubuntu-20.04  # 使用 Ubuntu 20.04，它默认使用 glibc 2.31 [^26^]
+
     steps:
       # 1. 拉取代码
       - uses: actions/checkout@v4
@@ -14,7 +16,7 @@ jobs:
       # 2. 设置 Go 环境
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.23.4'
+          go-version: '1.23'
 
       # 3. 下载全部依赖到 vendor（离线可用）
       - name: Vendor dependencies
